@@ -1,12 +1,5 @@
-import pandas
-import numpy
-import requests
-from bs4 import BeautifulSoup
 import yaml
-import time
-from tqdm import tqdm
 import tidyxbrl 
-pandas.set_option('display.max_columns', None)
 
 credentials = yaml.safe_load(open("tests\test_credentials.yml", "r"))
 username = credentials['credentials']['username'][0]
@@ -31,7 +24,7 @@ dataresponse2 = tidyxbrl.xbrl_apiquery(access_token=response.access_token.values
                         })
 
 
-dataresponse3 = tidyxbrl.xbrl_query(access_token=response.access_token.values[0], 
+dataresponse3 = tidyxbrl.xbrl_apiquery(access_token=response.access_token.values[0], 
                baseapiurl='https://api.xbrl.us/api/v1/fact/141024005?',
                queryparameters = {'fields': "fact.value,concept.local-name"
                         })
