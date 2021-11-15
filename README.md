@@ -21,7 +21,7 @@ This projects is currently divided into two key functionalities. Applicable docu
 
 ### Edgar
   - [**SEC Edgar Information**][sec-edgar-data-url]
-  - [**SEC API Documentation][sec-api-documentation-url]
+  - [**SEC API Documentation**][sec-api-documentation-url]
   - [**SEC Flat Files**][sec-flatfiles-url]
   
   [xbrl-api-url]: https://xbrl.us/home/use/xbrl-api/
