@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 # Function to parse xbrl files or website urls
-def xbrl_parse(path='', parse_type = "xml"):
+def xbrl_parse(path, parse_type = "xml"):
     """
     The xbrl_apikey function is used to parse the metadata from a particular XBRL file.  
     Inputs:
