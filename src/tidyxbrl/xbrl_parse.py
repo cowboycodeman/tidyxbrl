@@ -5,11 +5,13 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 # Function to parse xbrl files or website urls
-def xbrl_parse(path=''):
+def xbrl_parse(path='', parse_type = "xml"):
     """
     The xbrl_apikey function is used to parse the metadata from a particular XBRL file.  
     Inputs:
         path: filepath or website url corresponding to XBRL data
+        parse_type: The type of Beautiful Soup Parse. xml is case sensitive, all others are lowercase
+            - 'xml', 'lxml', 'lxml-xml', 'html.parser', 'html5lib'
 
     Outputs:
         xbrl_parseoutput: Pandas DataFrame output of the XBRL file in a tidy format
@@ -37,16 +39,24 @@ def xbrl_parse(path=''):
     # Pass the table through a filter to remove all unnecessary tags (body, html, :) that don't describe descriptive columns
     def xbrlcolumnprefilter(tag):
         return tag.name != 'body' and tag.name != 'xbrl' and tag.name != 'html' and ":" not in tag.name
-
+    
+    if(parse_type not in ['xml', 'lxml', 'lxml-xml', 'html.parser', 'html5lib']):
+        raise ValueError("parse_type must be either 'xml', 'lxml', 'lxml-xml', 'html.parser', 'html5lib'")
+    
+    if(parse_type != 'xml'):
+        contextrefval = "contextref"
+    else:
+        contextrefval = "contextRef"
+    
     soupheaders = {'User-Agent': 'Mozilla'}
     initialrequest = requests.get(path, headers=soupheaders)
     # Pull the raw html code from the applicable website or file path
     if initialrequest.status_code == 200:
         websitedocument = initialrequest.content
-        soup = BeautifulSoup(websitedocument, 'lxml')
+        soup = BeautifulSoup(websitedocument, parse_type)
     else:
         try:
-            soup = BeautifulSoup(open(path), 'lxml')
+            soup = BeautifulSoup(open(path), parse_type)
         except Exception:
             print("Path Does Not Correspond to a Website or Valid File Path")
         pass
@@ -99,14 +109,14 @@ def xbrl_parse(path=''):
         # Append the new row of data to the existing data frame
         outputframe = outputframe.append(insertframe)
     
-    # Contextref corresponds to the values that actually store the unique datacode/datavalue sets
-    # Create a modifiedsoup that only contains the datavalues & datacode. The data is identified by a contextref tag that matches the context tag in the outputframe above
+    # contextRef corresponds to the values that actually store the unique datacode/datavalue sets
+    # Create a modifiedsoup that only contains the datavalues & datacode. The data is identified by a contextRef tag that matches the context tag in the outputframe above
     # This step populates the outputframe and adds new rows for duplicated datasets
-    modifiedsoup = soup.findAll(attrs={"contextref": not None})
+    modifiedsoup = soup.findAll(attrs={contextrefval: not None})
     outputframebasic = outputframe #Does not expand. Lowers computation for large datasets
     for selectionchoice in tqdm(modifiedsoup):
         # Specify the data values & pull the descriptive data
-        uniqueidentifier = selectionchoice.get('contextref')
+        uniqueidentifier = selectionchoice.get(contextrefval)
         rawdataframe = outputframe[outputframe.context == uniqueidentifier].drop_duplicates(
             subset=['identifier'])
         titleholder = str(selectionchoice.name)
@@ -117,7 +127,7 @@ def xbrl_parse(path=''):
             # Parse through all columns specified by keyholder populate each column
             for keyholder in list(selectionchoice.attrs.keys()):
                 # Avoid contextref & id as it is a duplicate to context. Values with ':' are unnecessary
-                if keyholder != 'contextref' and keyholder != 'id' and ":" not in keyholder:
+                if keyholder != contextrefval and keyholder != 'id' and ":" not in keyholder:
                     outputframe.loc[outputframe.context == uniqueidentifier, keyholder] = selectionchoice.get(keyholder)
             outputframe.loc[outputframe.context == uniqueidentifier, 'datacode'] = titleholder
             outputframe.loc[outputframe.context == uniqueidentifier, 'datavalue'] = outputvalueholder
@@ -125,7 +135,7 @@ def xbrl_parse(path=''):
         else:
             # Use the raw dataframe to initialize the new row, then modify. Remove duplicate id and contextref columns
             filteredselection = list(selectionchoice.attrs.keys())
-            filteredselection.remove('contextref')
+            filteredselection.remove(contextrefval)
             filteredselection.remove('id')  
             for keyholder in filteredselection:
                 # Parse through all keys & add as their own column
