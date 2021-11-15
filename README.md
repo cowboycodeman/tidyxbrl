@@ -20,15 +20,13 @@ This projects is currently divided into two key functionalities. Applicable docu
   - [**XBRL API Examples**][xbrl-example-url]
 
 ### Edgar
-  - [**SEC XBRL Files**][sec-xbrl-url]
   - [**SEC Edgar Information**][sec-edgar-data-url]
-  - [**SEC API Documentation][sec-api-documentation-url]
+  - [**SEC API Documentation**][sec-api-documentation-url]
   - [**SEC Flat Files**][sec-flatfiles-url]
   
   [xbrl-api-url]: https://xbrl.us/home/use/xbrl-api/
   [xbrl-documentation-url]: http://files.xbrl.us/documents/XBRL-API-V1.4.pdf
   [xbrl-example-url]: https://xbrlus.github.io/xbrl-api/#/document/getDocumentInfo
-  [sec-xbrl-url]: https://www.sec.gov/os/accessing-edgar-data
   [sec-edgar-data-url]: https://www.sec.gov/os/accessing-edgar-data
   [sec-api-documentation-url]: https://www.sec.gov/edgar/sec-api-documentation
   [sec-flatfiles-url]: https://www.sec.gov/Archives/edgar/full-index/
