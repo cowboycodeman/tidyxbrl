@@ -36,11 +36,11 @@ def edgar_frames(urldescriptor=''):
             result = pandas.DataFrame(pandas.json_normalize(dataresponse.json()))
             longdata = pandas.melt(result, id_vars=['taxonomy'])
         except Exception:
-            raise ValueError(dataresponse.json())
+            raise ValueError(str(dataresponse.json()))
     else:
         xbrl_queryoutput = dataresponse.status_code
         print(dataresponse.text)
-        raise ValueError(xbrl_queryoutput + ": Error in Response")
+        raise ValueError(str(xbrl_queryoutput) + ": Error in Response")
     
     # If the data is in a list form, then convert into a nested dataframe
     for valueholder in tqdm(range(1, longdata.value.__len__())):

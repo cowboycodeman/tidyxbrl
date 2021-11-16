@@ -58,9 +58,9 @@ def xbrl_query(access_token,
             xbrl_queryoutput = pandas.DataFrame.from_dict(
                 dataresponse.json()['data'])
         except Exception:
-            raise ValueError(dataresponse.json())
+            raise ValueError(str(dataresponse.json()))
     else:
         xbrl_queryoutput = dataresponse.status_code
         print(dataresponse.text)
-        raise ValueError(xbrl_queryoutput + ": Error in Response")
+        raise ValueError(str(xbrl_queryoutput) + ": Error in Response")
     return(xbrl_queryoutput)

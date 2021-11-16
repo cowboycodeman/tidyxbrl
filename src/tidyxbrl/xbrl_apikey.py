@@ -58,9 +58,9 @@ def xbrl_apikey(username, password, client_id, client_secret, platform='pc', gra
             result = pandas.DataFrame(
                 pandas.json_normalize(xbrl_apikeyoutput.json()))
         except Exception:
-            raise ValueError(dataresponse.json())
+            raise ValueError(str(dataresponse.json()))
     else:
         result = xbrl_apikeyoutput.status_code
         print(xbrl_apikeyoutput.text)
-        raise ValueError(result + ": Error in Response")
+        raise ValueError(str(result) + ": Error in Response")
     return result

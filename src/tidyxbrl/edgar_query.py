@@ -43,11 +43,11 @@ def edgar_query(companycik, query_type, queryextension=''):
             result = pandas.DataFrame(pandas.json_normalize(dataresponse.json()))
             longdata = pandas.melt(result, id_vars=['cik'])
         except Exception:
-            raise ValueError(dataresponse.json())
+            raise ValueError(str(dataresponse.json()))
     else:
         xbrl_queryoutput = dataresponse.status_code
         print(dataresponse.text)
-        raise ValueError(xbrl_queryoutput + ": Error in Response")
+        raise ValueError(str(xbrl_queryoutput) + ": Error in Response")
     
     # If the data is in a list form, then convert into a nested dataframe
     for valueholder in tqdm(range(1, longdata.value.__len__())):
