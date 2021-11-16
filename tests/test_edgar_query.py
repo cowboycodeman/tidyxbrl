@@ -1,6 +1,6 @@
 import tidyxbrl
 
-companycik = tidyxbrl.edgar_querycik()
+companycik = tidyxbrl.edgar_cik()
 
 tidyxbrl.edgar_query('0000789019', query_type = 'submissions')
 tidyxbrl.edgar_query('0000789019', query_type = 'companyconcept', queryextension = '/us-gaap/AccountsPayableCurrent.json')
