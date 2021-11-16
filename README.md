@@ -13,13 +13,13 @@
 ## The XBRL Standard
 eXtensible Business Reporting Language (XBRL) is a standardized financial reporting framework to structure financial reporting in a way that enables automation and machine processing. This package aims to enable its users to realize the full capabilities of the XBRL standard through paring files and interfacing with the applicable APIs.
 
-This projects is currently divided into two key functionalities. Applicable documentation can be found below:
+This projects is currently interfaces with the XBRL and EDGAR apis. Applicable documentation can be found below:
 ### XBRL
   - [**XBRL API Overview**][xbrl-api-url]
   - [**XBRL API Documentation**][xbrl-documentation-url]
   - [**XBRL API Examples**][xbrl-example-url]
 
-### Edgar
+### EDGAR
   - [**SEC Edgar Information**][sec-edgar-data-url]
   - [**SEC API Documentation**][sec-api-documentation-url]
   - [**SEC Flat Files**][sec-flatfiles-url]
