@@ -11,7 +11,7 @@
 **tidyxbrl** is a Python package that parses XBRL data files and returns dynamic structures that succinctly store the underlying data. This package additionally can interface with the XBRL API interface, with further expansion to other data providers planned for the near future. This package aims to the be the simplest and most effective method to parse XBRL data in Python.
 
 ## The XBRL Standard
-eXtensible Business Reporting Language (XBRL) is a standardized financial reporting framework to structure financial reporting in a way that enables automation and machine processing. This package aims to enable its users to realize the full capabilities of the XBRL standard through paring files and interfacing with the applicable APIs.
+eXtensible Business Reporting Language (XBRL) is a standardized financial reporting framework to structure financial reporting in a way that enables automation and machine processing. This package aims to enable its users to realize the full capabilities of the XBRL standard through parsing files and interfacing with the applicable APIs.
 
 This projects is currently interfaces with the XBRL and EDGAR apis. Applicable documentation can be found below:
 ### XBRL
