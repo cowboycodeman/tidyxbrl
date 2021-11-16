@@ -38,7 +38,7 @@ def xbrl_parse(path, parse_type = "xml"):
     # Specify Inner Functions
     # Pass the table through a filter to remove all unnecessary tags (body, html, :) that don't describe descriptive columns
     def xbrlcolumnprefilter(tag):
-        return tag.name != 'body' and tag.name != 'xbrl' and tag.name != 'html' and ":" not in tag.name
+        return tag.name != 'body' and tag.name != 'xbrl' and tag.name != 'html' and tag.prefix == '' and ":" not in tag.name 
     
     if(parse_type not in ['xml', 'lxml', 'lxml-xml', 'html.parser', 'html5lib']):
         raise ValueError("parse_type must be either 'xml', 'lxml', 'lxml-xml', 'html.parser', 'html5lib'")
@@ -72,7 +72,6 @@ def xbrl_parse(path, parse_type = "xml"):
     # Append datacode (unique identifier) and datavalue (unique value) to be populated in later steps
     columnlist.append('datacode')
     columnlist.append('datavalue')
-    print(columnlist)
     # Create an initialized dataframe to describe each unique context identifier that corresponds to a datacode/datavalue set
     outputframe = \
         pandas.DataFrame(
