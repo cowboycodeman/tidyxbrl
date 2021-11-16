@@ -2,6 +2,8 @@ import pandas
 import requests
 
 # Function to query the XBRL API
+
+
 def xbrl_query(access_token,
                queryparameters,
                baseapiurl='https://api.xbrl.us/api/v1/report/search?'):
@@ -35,27 +37,30 @@ def xbrl_query(access_token,
                                 })
 
     """
-    
-    
+
     # Modify the queryparameter keys to create a web request string in dataquery
+    # Add the "=" sign between keys and values
     for keyholder in list(queryparameters.keys()):
         queryparameters[keyholder + "="] = queryparameters[keyholder]
         del queryparameters[keyholder]
+    # Add the "&" sign between keys
     queryurl = ''.join(list(map(str.__add__, list(queryparameters.keys()), [
                        "{}{}".format(i, '&') for i in list(queryparameters.values())])))[:-1]
+    # Add the baseurl and modified request values
     dataquery = str(baseapiurl + queryurl)
+    # Generate the authentication bearer tolken
     headers = {"Authorization": "Bearer " + access_token}
-    # Generate the dataresponse
+    # Generate the response
     dataresponse = requests.get(url=dataquery, headers=headers)
     # Check the Response Code
     if dataresponse.status_code == 200:
         try:
-            xbrl_queryoutput = pandas.DataFrame.from_dict(dataresponse.json()['data'])
+            xbrl_queryoutput = pandas.DataFrame.from_dict(
+                dataresponse.json()['data'])
         except Exception:
             raise ValueError(dataresponse.json())
     else:
         xbrl_queryoutput = dataresponse.status_code
         print(dataresponse.text)
         raise ValueError(xbrl_queryoutput + ": Error in Response")
-    #
     return(xbrl_queryoutput)
