@@ -33,7 +33,7 @@ def edgar_query(companycik, query_type, queryextension=''):
         raise ValueError("parse_type must be in: " + str(querydict.keys()))
     # Specify the query url and parameters
     urlquery = querydict[query_type]
-    dataquery = urlquery + companycik + \
+    dataquery = urlquery + str(companycik) + \
         str(queryextension).replace(".json", "") + ".json"
     soupheaders = {'User-Agent': 'Mozilla'}
     # Pull the data, check the response, and convert to a long format
