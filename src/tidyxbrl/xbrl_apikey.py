@@ -1,8 +1,6 @@
 import pandas
 import requests
 
-# Function to generate or refresh API keys
-
 
 def xbrl_apikey(username, password, client_id, client_secret, platform='pc', grant_type='password', refresh_token=''):
     """
