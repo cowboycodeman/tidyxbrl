@@ -4,8 +4,6 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-# Function to parse xbrl files or website urls
-
 
 def xbrl_parse(path):
     """

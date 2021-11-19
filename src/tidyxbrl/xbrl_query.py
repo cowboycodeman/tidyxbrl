@@ -1,8 +1,6 @@
 import pandas
 import requests
 
-# Function to query the XBRL API
-
 
 def xbrl_query(access_token,
                queryparameters,
