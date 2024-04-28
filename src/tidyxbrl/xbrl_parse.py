@@ -74,7 +74,7 @@ def xbrl_parse(path, timeout_sec=15):
     print(columnlist)
 
     data = []
-    for tag in tqdm(empty_tag_list):
+    for tag in tqdm(empty_tag_list, desc="Processing Unique Identifiers"):
         row = {}
         for columnname in columnlist:
             if columnname == "context":
@@ -94,7 +94,7 @@ def xbrl_parse(path, timeout_sec=15):
     data_for_tag_list = soup.findAll(attrs={"contextRef": not None})
 
     data = []
-    for selectionchoice in tqdm(data_for_tag_list):
+    for selectionchoice in tqdm(data_for_tag_list, desc="Processing Data Points"):
         uniqueidentifier = selectionchoice.get("contextRef")
         rawdataframe = outputframe[outputframe.context == uniqueidentifier].drop_duplicates(subset=["identifier"])
         titleholder = str(selectionchoice.name)

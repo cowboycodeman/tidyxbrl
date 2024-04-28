@@ -1,7 +1,8 @@
+# %%
 import yaml
 import tidyxbrl 
 
-credentials = yaml.safe_load(open("tests\test_credentials.yml", "r"))
+credentials = yaml.safe_load(open("tests/test_credentials.yml", "r"))
 username = credentials['credentials']['username'][0]
 password = credentials['credentials']['password'][0]
 client_id = credentials['credentials']['client_id'][0]

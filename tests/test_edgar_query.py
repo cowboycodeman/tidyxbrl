@@ -1,3 +1,4 @@
+# %%
 import tidyxbrl
 
 tidyxbrl.edgar_query('0000789019', query_type = 'submissions')
