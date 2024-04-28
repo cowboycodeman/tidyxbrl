@@ -35,6 +35,7 @@ https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json
 import pandas
 import requests
 from tqdm import tqdm
+import numpy
 
 
 def edgar_query(companycik, query_type, queryextension="", timeout_sec = 15):
@@ -100,8 +101,26 @@ def edgar_query(companycik, query_type, queryextension="", timeout_sec = 15):
         loadvalue = longdata.iloc[valueholder].value
         if str(type(loadvalue)) == "<class 'list'>":
             try:
-                longdata.at[valueholder, "value"] = pandas.json_normalize(loadvalue)
-            except ValueError:
+                longdata.at[valueholder, "value"] = pandas.DataFrame(loadvalue).transpose().explode("value")
+            except Exception:
                 pass
-
-    return longdata
+                
+    data_out = longdata.pivot(columns="variable", index="cik").reset_index()
+    
+    data_out.columns = [col[1].strip() if col[1] != "" else col[0].strip() for col in data_out.columns.values]
+    data_out.reset_index(inplace=True)
+    
+    list_columns = list()
+    for col in data_out.columns:
+        if isinstance(data_out[col].iloc[0], list):
+            list_columns += [col]
+    
+    data_exploded = data_out.drop(columns=list_columns)
+    
+    for col in list_columns:
+            data_exploded = pd.concat([data_exploded, pd.DataFrame(data_out[col].explode()).reset_index(drop = True) ], axis=1)
+        
+    cols_to_fill = data_exploded.columns.difference(list_columns)
+    data_exploded[cols_to_fill] = data_exploded[cols_to_fill].ffill()
+    
+    return data_exploded
