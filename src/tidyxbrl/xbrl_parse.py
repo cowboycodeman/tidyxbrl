@@ -96,7 +96,7 @@ def xbrl_parse(path):
                         insertframe[columnname] = numpy.nan
 
         # Append the new row of data to the existing data frame
-        outputframe = outputframe.append(insertframe)
+        outputframe = pandas.concat([outputframe,insertframe])
 
     # contextRef corresponds to the values that actually store the unique datacode/datavalue sets
     # Create a modifiedsoup that only contains the datavalues & datacode. The data is identified by a contextRef tag that matches the context tag in the outputframe above
@@ -137,7 +137,7 @@ def xbrl_parse(path):
             # insert the new value to the dataframe
             rawdataframe.datacode = titleholder
             rawdataframe.datavalue = outputvalueholder
-            outputframe = outputframe.append(rawdataframe)
+            outputframe = pandas.concat([outputframe,rawdataframe])
 
     # convert empty strings to NULL, & remove all columns with only NULL or blank values
     outputframe = outputframe.replace('', numpy.nan)
