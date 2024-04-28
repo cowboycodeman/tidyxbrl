@@ -1,3 +1,7 @@
+"""
+Function to parse raw XBRL files from a website or file path.
+"""
+
 import pandas
 import numpy
 import requests
@@ -5,35 +9,38 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 
-def xbrl_parse(path):
+def xbrl_parse(path, timeout_sec=15):
     """
-    The xbrl_apikey function is used to parse the metadata from a particular XBRL file r website url.
-    Inputs:
-        path: filepath or website url corresponding to XBRL data
+    The xbrl_apikey function is used to parse the metadata from a particular XBRL file or
+    website url.
 
-    Outputs:
-        xbrl_parseoutput: Pandas DataFrame output of the XBRL file in a tidy format
-            Descriptive Columns: Dynamic columns that describe the dataset. The columns below outline the SEC file format, and are due to change based on the data source.
-                - context: Unique identity assigned to all item facts
-                - identifier: The value of the scheme attribute of the entity identifier
-                - startdate: Beginning date of the dataset (This applies to duration time periods)
-                - enddate: Ending date of the dataset (This applies to duration time periods)
-                - segment: Tag that allows additional information to be included in the context of an instance document; this information captures segment information such as an entity's business units, type of debt, type of other income, and so forth.
-                - instant: Instant date of the data set. This caputures an instance in time, and does not co-exist with time periods
-                - decimals: Number of decimals in the dataset
-                - unitref: Unit of the dataset
+    Args:
+        path (str): Filepath or website url corresponding to XBRL data.
+        timeout_sec: The time in seconds to wait for the server to respond
+
+    Returns:
+        pandas.DataFrame: DataFrame output of the XBRL file in a tidy format.
+            Descriptive Columns: Dynamic columns that describe the dataset. The columns below
+            outline the SEC file format, and are due to change based on the data source.
+                - context: Unique identity assigned to all item facts.
+                - identifier: The value of the scheme attribute of the entity identifier.
+                - startdate: Beginning date of the dataset (applies to duration time periods).
+                - enddate: Ending date of the dataset (applies to duration time periods).
+                - segment: Tag that allows additional information to be included in the context
+                of an instance document.
+                - instant: Instant date of the data set. Captures an instance in time.
+                - decimals: Number of decimals in the dataset.
+                - unitref: Unit of the dataset.
             Data Columns:
-                - datacode: Description of the dataset
-                - datvalue: Value of the dataset
+                - datacode: Description of the dataset.
+                - datvalue: Value of the dataset.
 
     Examples:
-        - xbrl_parse('https://www.sec.gov/Archives/edgar/data/320193/000032019321000010/aapl-20201226_htm.xml')
-        - xbrl_parse('https://www.sec.gov/Archives/edgar/data/51143/000155837020001334/ibm-20191231x10k2af531_htm.xml')
-        - xbrl_parse('https://www.sec.gov/Archives/edgar/data/1318605/000156459020047486/tsla-10q_20200930_htm.xml')
+        xbrl_parse('https://www.sec.gov/Archives/edgar/data/320193/000032019321000010/aapl-20201226_htm.xml')
+        xbrl_parse('https://www.sec.gov/Archives/edgar/data/51143/000155837020001334/ibm-20191231x10k2af531_htm.xml')
+        xbrl_parse('https://www.sec.gov/Archives/edgar/data/1318605/000156459020047486/tsla-10q_20200930_htm.xml')
     """
 
-    # Specify Inner Functions
-    # Pass the table through a filter to remove all unnecessary tags (body, html, :, prefixed datasets) that don't describe descriptive columns
     def xbrlcolumnprefilter(tag):
         return (
             tag.name != "body"
@@ -44,124 +51,83 @@ def xbrl_parse(path):
         )
 
     soupheaders = {"User-Agent": "Mozilla"}
-    initialrequest = requests.get(path, headers=soupheaders)
-    # Pull the raw html code from the applicable website or file path
+    initialrequest = requests.get(path, headers=soupheaders, timeout=timeout_sec)
     if initialrequest.status_code == 200:
         websitedocument = initialrequest.content
         soup = BeautifulSoup(websitedocument, "xml")
     else:
         try:
-            soup = BeautifulSoup(open(path), "xml")
-        except Exception:
+            with open(path, "r", encoding="utf-8") as file:
+                soup = BeautifulSoup(file, "xml")
+        except ValueError:
             print("Path Does Not Correspond to a Website or Valid File Path")
-        pass
 
     # Pull a list of the descriptive columns to populate an empty dataframe
     tag_listall = soup.find_all(xbrlcolumnprefilter)
-    tag_list = soup.select("context")
+    empty_tag_list = soup.select("context")
     columnlist = []
-    for n in tag_listall:
-        if n.name not in columnlist:
-            columnlist.append(n.name)
+    for temp_tag in tag_listall:
+        if temp_tag.name not in numpy.unique(columnlist):
+            columnlist.append(temp_tag.name)
 
-    # Append datacode (unique identifier) and datavalue (unique value) to be populated in later steps
-    columnlist.append("datacode")
-    columnlist.append("datavalue")
+    columnlist = list(columnlist) + ["datacode", "datavalue"]
     print(columnlist)
-    # Create an initialized dataframe to describe each unique context identifier that corresponds to a datacode/datavalue set
-    outputframe = pandas.DataFrame(columns=list(columnlist), dtype="object")
-    outputframe.datacode = ""
-    outputframe.datavalue = ""
-    # Populate the outputframe with all descriptive supplementary data to be populated in later steps. One row per context in this stage.
-    # This steps defines the number of unique context reference codes and sets the descriptive values. It does not yet opulated data (datacode & datvalue)
-    # There can be multiple datacodes/datavalues per context reference codes, which are populated in later steps
-    for tag in tqdm(tag_list):
-        # Create a dataframe row to explain the  descriptive data for each context identifier
-        insertframe = pandas.DataFrame(
-            columns=columnlist,
-            data=numpy.full(
-                [
-                    1,
-                    columnlist.__len__(),
-                ],
-                numpy.nan,
-            ),
-        )
-        # Parse through each column name to extract the applicable column data
+
+    data = []
+    for tag in tqdm(empty_tag_list):
+        row = {}
         for columnname in columnlist:
-            # Context contains the unique description identifier
             if columnname == "context":
-                insertframe[columnname] = tag.get("id")
+                row[columnname] = tag.get("id")
             else:
-                # If there are child nodes, then discard. Only Pull the lowest level of data housing the values
-                if not not tag.find(columnname):
+                if tag.find(columnname):
                     if not tag.find(columnname).findChild():
-                        insertframe[columnname] = tag.find(columnname).text
+                        row[columnname] = tag.find(columnname).text
                     elif tag.find(columnname).findChild().name not in columnlist:
-                        insertframe[columnname] = tag.find(columnname).findChild().text
+                        row[columnname] = tag.find(columnname).findChild().text
                     else:
-                        insertframe[columnname] = numpy.nan
+                        row[columnname] = numpy.nan
+        data.append(row)
 
-        # Append the new row of data to the existing data frame
-        outputframe = pandas.concat([outputframe, insertframe])
+    outputframe = pandas.DataFrame(data, columns=columnlist)
 
-    # contextRef corresponds to the values that actually store the unique datacode/datavalue sets
-    # Create a modifiedsoup that only contains the datavalues & datacode. The data is identified by a contextRef tag that matches the context tag in the outputframe above
-    # This step populates the outputframe and adds new rows for duplicated datasets
-    # As there can be multiple contextRef per context (specified in insertframe above), new rows are added in such situations
-    modifiedsoup = soup.findAll(attrs={"contextRef": not None})
-    for selectionchoice in tqdm(modifiedsoup):
-        # Specify the data values & pull the descriptive data
+    data_for_tag_list = soup.findAll(attrs={"contextRef": not None})
+
+    data = []
+    for selectionchoice in tqdm(data_for_tag_list):
         uniqueidentifier = selectionchoice.get("contextRef")
-        rawdataframe = outputframe[
-            outputframe.context == uniqueidentifier
-        ].drop_duplicates(subset=["identifier"])
+        rawdataframe = outputframe[outputframe.context == uniqueidentifier].drop_duplicates(subset=["identifier"])
         titleholder = str(selectionchoice.name)
         outputvalueholder = str(selectionchoice.text)
-        # If data does not exist in the existing dataset, update the null dataset else create a new row.
-        # The if statement checks if the existing data contains data.
-        if (
-            str(rawdataframe.iloc[0]["datavalue"]) == "nan"
-            and str(rawdataframe.iloc[0]["datacode"]) == "nan"
-        ):
-            # Parse through all columns specified by keyholder populate each column
-            for keyholder in list(selectionchoice.attrs.keys()):
-                # Avoid contextref & id as it is a duplicate to context. Values with ':' are unnecessary for columns
-                if (
-                    keyholder != "contextRef"
-                    and keyholder != "id"
-                    and ":" not in keyholder
-                ):
-                    outputframe.loc[
-                        outputframe.context == uniqueidentifier, keyholder
-                    ] = selectionchoice.get(keyholder)
-            outputframe.loc[outputframe.context == uniqueidentifier, "datacode"] = (
-                titleholder
-            )
-            outputframe.loc[outputframe.context == uniqueidentifier, "datavalue"] = (
-                outputvalueholder
-            )
-        # If not the first iteration, add a new row.
+
+        row = rawdataframe.iloc[0].to_dict()
+        if pandas.isnull(row["datavalue"]) and pandas.isnull(row["datacode"]):
+            for keyholder in selectionchoice.attrs.keys():
+                if keyholder not in ["contextRef", "id"] and ":" not in keyholder:
+                    row[keyholder] = selectionchoice.get(keyholder)
+            row["datacode"] = titleholder
+            row["datavalue"] = outputvalueholder
         else:
-            # Use the raw dataframe to initialize the new row, then modify. Remove duplicate id and contextref columns
-            filteredselection = list(selectionchoice.attrs.keys())
-            filteredselection.remove("contextRef")
-            filteredselection.remove("id")
+            filteredselection = [
+                k
+                for k in selectionchoice.attrs.keys()
+                if k not in ["contextRef", "id"] and ":" not in k
+            ]
             for keyholder in filteredselection:
-                # Parse through all keys & add as their own column. Values with ':' are unnecessary for columns
-                if ":" not in keyholder:
-                    rawdataframe.loc[0, keyholder] = selectionchoice.get(keyholder)
-            # insert the new value to the dataframe
-            rawdataframe.datacode = titleholder
-            rawdataframe.datavalue = outputvalueholder
-            outputframe = pandas.concat([outputframe, rawdataframe])
+                row[keyholder] = selectionchoice.get(keyholder)
+            row["datacode"] = titleholder
+            row["datavalue"] = outputvalueholder
+        data.append(row)
+
+    outputframe = pandas.DataFrame(data)
 
     # convert empty strings to NULL, & remove all columns with only NULL or blank values
-    outputframe = outputframe.replace("", numpy.nan)
-    xbrl_parseoutput = outputframe.dropna(axis=1, how="all")
-    # Reorder the columns to present the datacode & datavalue at the right most column
-    columnsTitles = list(xbrl_parseoutput.columns)
-    columnsTitles.sort(key="datacode".__eq__)
-    columnsTitles.sort(key="datavalue".__eq__)
-    xbrl_parseoutput = xbrl_parseoutput.reindex(columns=columnsTitles)
-    return xbrl_parseoutput.sort_values(by=["context"])
+    outputframe = outputframe.replace("", numpy.nan).dropna(axis=1, how="all")
+
+    # Reorder the columns to present the datacode & datavalue at the rightmost column
+    columnstitles = list(outputframe.columns)
+    columnstitles.sort(key=lambda x: x == "datacode")
+    columnstitles.sort(key=lambda x: x == "datavalue")
+    outputframe = outputframe.reindex(columns=columnstitles)
+
+    return outputframe.sort_values(by=["context"])

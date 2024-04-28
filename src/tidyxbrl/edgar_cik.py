@@ -1,15 +1,25 @@
+"""
+The Central Index Key (CIK) is a unique identifier assigned by 
+the U.S. Securities and Exchange Commission (SEC) to reporting companies. 
+It is used to track and identify these companies in various SEC filings and databases. 
+The CIK is a 10-digit number, and this function converts the CIKs of reporting companies 
+into 10-digit format with leading zeros.
+"""
+
 import pandas
 import requests
 import numpy
 
 
-def edgar_cik():
+def edgar_cik(timeout_sec = 15):
     """
     The edgar_cik function is used to pull Central Index Key (CIK) for reporting companies
-    Inputs:
+    
+    Args:
+        timeout_sec: The time in seconds to wait for the server to respond
 
     Outputs:
-        companies: Return a pandas DataFrame of reporting companies and their associated CIK. Note that the CIK is converted to 10 digits with leading 0s
+        companies: Pandas DataFrame of companies and their CIKconverted to 10 digits with leading 0s
 
     Examples:
         - edgar_cik()
@@ -26,14 +36,14 @@ def edgar_cik():
         "Upgrade-Insecure-Requests": "1",
     }
 
-    data = requests.get(url, headers=headers)
+    data = requests.get(url, headers=headers, timeout=timeout_sec)
 
-    companies = pd.DataFrame(data.json()).transpose()
+    companies = pandas.DataFrame(data.json()).transpose()
 
     # Convert each company CIK into a 10 digit CIK for the API
     columnoverride = []
     for shortcik in companies.cik_str:
-        valappender = 10 - str(shortcik).__len__()
+        valappender = 10 - len(str(shortcik))
         valueout = "".join(str(a) for a in numpy.repeat(0, valappender)) + str(shortcik)
         columnoverride.append(valueout)
 
