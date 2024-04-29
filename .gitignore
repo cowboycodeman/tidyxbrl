@@ -2,3 +2,16 @@
 *.txt
 *.tar.gz
 *.yml
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyz
+*.pyw
+*.pyi
+*.pyproj
+*.egg-info/
+dist/
+build/
+*.egg
+*.whl
