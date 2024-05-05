@@ -83,7 +83,14 @@ def edgar_query(companycik, query_type, queryextension="", parse_pandas = True, 
     dataquery = (
         urlquery + str(companycik) + str(queryextension).replace(".json", "") + ".json"
     )
-    headers = {"User-Agent": "Mozilla"}
+    headers = {
+        "User-Agent": "Mozilla",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "DNT": "1",  # Do Not Track Request Header
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+    }
     # Pull the data, check the response, and convert to a long format
     dataresponse = requests.get(url=dataquery, headers=headers, timeout=timeout_sec)
     if dataresponse.status_code == 200:
@@ -109,4 +116,5 @@ def edgar_query(companycik, query_type, queryextension="", parse_pandas = True, 
                     longdata.at[valueholder, "value"] = loadvalue_df
                 except Exception:
                     longdata.at[valueholder, "value"] = pandas.DataFrame(loadvalue)
+    longdata = longdata.assign(cik = lambda x: pandas.to_numeric(x.cik, errors='coerce'))
     return longdata

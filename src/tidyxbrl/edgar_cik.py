@@ -92,9 +92,10 @@ def edgar_cik(
         )
         company_df = pd.DataFrame(
             {
-                "CIK": [company_names],
-                "Company Name": [cik_codes],
-                "State": [states],
+                "cik": pd.to_numeric(cik_codes),
+                "cik_str": [cik_codes],
+                "company": [company_names],
+                "state": [states],
             }
         )
         return company_df
@@ -118,9 +119,9 @@ def edgar_cik(
 
         # Create a pandas DataFrame
         company_df = pd.DataFrame(
-            {"CIK": cik_codes, "Company Name": company_names, "State": states}
+            {"cik": pd.to_numeric(cik_codes), "cik_str": cik_codes ,"company": company_names, "state": states}
         )
-        print(f"Start Row: {start_row} - {company_df.iloc[0]['Company Name']}")
+        print(f"Start Row: {start_row} - {company_df.iloc[0]['company']}")
 
         if (
             (comprehensive is True)
