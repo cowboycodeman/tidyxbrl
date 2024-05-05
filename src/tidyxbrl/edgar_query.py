@@ -38,7 +38,7 @@ from tqdm import tqdm
 import numpy
 
 
-def edgar_query(companycik, query_type, queryextension="", timeout_sec = 15):
+def edgar_query(companycik, query_type, queryextension="", parse_pandas = True, timeout_sec = 15):
     """
     Query SEC data using the Central Index Key (CIK).
 
@@ -52,6 +52,7 @@ def edgar_query(companycik, query_type, queryextension="", timeout_sec = 15):
         'companyfacts'.
         queryextension (str, optional): Extension required for the "companyconcept"
         query_type to specify the report type. Defaults to "".
+        parse_pandas (bool, optional): If True, the data is converted to a pandas DataFrame.
         timeout_sec: The time in seconds to wait for the server to respond
 
     Returns:
@@ -82,9 +83,9 @@ def edgar_query(companycik, query_type, queryextension="", timeout_sec = 15):
     dataquery = (
         urlquery + str(companycik) + str(queryextension).replace(".json", "") + ".json"
     )
-    soupheaders = {"User-Agent": "Mozilla"}
+    headers = {"User-Agent": "Mozilla"}
     # Pull the data, check the response, and convert to a long format
-    dataresponse = requests.get(url=dataquery, headers=soupheaders, timeout=timeout_sec)
+    dataresponse = requests.get(url=dataquery, headers=headers, timeout=timeout_sec)
     if dataresponse.status_code == 200:
         try:
             result = pandas.DataFrame(pandas.json_normalize(dataresponse.json()))
@@ -94,15 +95,18 @@ def edgar_query(companycik, query_type, queryextension="", timeout_sec = 15):
     else:
         xbrl_queryoutput = dataresponse.status_code
         # print(dataresponse.text)
-        raise ValueError(str(xbrl_queryoutput) + ": Error in Response")
+        raise ValueError(str(xbrl_queryoutput) + ": " + str(dataresponse.content))
 
-    # If the data is in a list form, then convert into a nested dataframe
-    for valueholder in tqdm(range(1, len(longdata.value))):
-        loadvalue = longdata.iloc[valueholder].value
-        if str(type(loadvalue)) == "<class 'list'>":
-            try:
-                longdata.at[valueholder, "value"] = pandas.DataFrame(loadvalue).transpose().explode("value")
-            except Exception:
-                longdata.at[valueholder, "value"] = pandas.DataFrame(loadvalue)
-    
+    # If the data is in a list form, then convert it into a nested dataframe
+    if parse_pandas:
+        for valueholder in tqdm(range(1, len(longdata.value))):
+            loadvalue = longdata.iloc[valueholder].value
+            if isinstance(loadvalue, list):
+                try:
+                    loadvalue_df = pandas.DataFrame(loadvalue)
+                    if len(loadvalue_df) > 1:
+                        loadvalue_df = loadvalue_df.transpose().explode("value")
+                    longdata.at[valueholder, "value"] = loadvalue_df
+                except Exception:
+                    longdata.at[valueholder, "value"] = pandas.DataFrame(loadvalue)
     return longdata
