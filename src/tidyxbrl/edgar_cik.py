@@ -1,15 +1,15 @@
 """
-The Central Index Key (CIK) is a unique identifier assigned by 
-the U.S. Securities and Exchange Commission (SEC) to reporting companies. 
-It is used to track and identify these companies in various SEC filings and databases. 
-The CIK is a 10-digit number, and this function converts the CIKs of reporting companies 
+The Central Index Key (CIK) is a unique identifier assigned by
+the U.S. Securities and Exchange Commission (SEC) to reporting companies.
+It is used to track and identify these companies in various SEC filings and databases.
+The CIK is a 10-digit number, and this function converts the CIKs of reporting companies
 into 10-digit format with leading zeros.
 """
 
 # https://www.sec.gov/edgar/searchedgar/companysearch
 # https://www.edgarcompany.sec.gov/servlet/CompanyDBSearch?page=main
 
-
+import re
 import requests
 from bs4 import element
 from bs4 import BeautifulSoup
@@ -17,18 +17,28 @@ import pandas as pd
 
 # %%
 
-def edgar_cik(query, comprehensive = False, start_row = 0, timeout_sec = 15, last_df = pd.DataFrame(), max_start_row = 25000):
+
+def edgar_cik(
+    query,
+    comprehensive=False,
+    start_row=0,
+    timeout_sec=15,
+    last_company_df=pd.DataFrame(),
+    max_start_row=25000,
+):
     """
     The edgar_cik function is used to pull Central Index Key (CIK) for reporting companies
-    
+
     Args:
         query: The company name or ticker symbol to search for
         comprehensive: Whether to retrieve all available results or just the first 100
         start_row: The starting index for retrieving results
         timeout_sec: The time in seconds to wait for the server to respond
+        last_company_df: (comprehensive = True) The previous DataFrame to compare with current
+        max_start_row: The maximum starting index for retrieving results
 
-    Outputs:
-        df: Pandas DataFrame of companies and their CIK converted to 10 digits with leading 0s
+    Returns:
+        company_df: Pandas DataFrame of company names, CIK, and state
 
     Examples:
         - edgar_cik('Apple Inc.', comprehensive=True)
@@ -44,40 +54,55 @@ def edgar_cik(query, comprehensive = False, start_row = 0, timeout_sec = 15, las
         "Upgrade-Insecure-Requests": "1",
     }
 
-    url = 'https://www.sec.gov/cgi-bin/browse-edgar'  # Replace with your desired CIK
+    url = "https://www.sec.gov/cgi-bin/browse-edgar"  # Replace with your desired CIK
 
-    payload = {"company": query,
-            "match":"starts-with",
-            "count": 100,
-            "start": start_row
-            }
+    payload = {
+        "company": query,
+        "match": "starts-with",
+        "count": 100,
+        "start": start_row,
+    }
 
-    response = requests.post(url, headers=headers, data=payload)
+    response = requests.post(url, headers=headers, data=payload, timeout=timeout_sec)
 
     # Parse the HTML content
-    soup = BeautifulSoup(response.content, 'html.parser')
+    soup = BeautifulSoup(response.content, "html.parser")
 
     # Find the table in the HTML
-    table = soup.find('table', {'class': 'tableFile2'})
-    
-    if soup.find(class_='companyName') != None:
-        
-        company_name = str(soup.find(class_='companyName').text).split("CIK#: ")[0].strip()
-        company_cik = str(re.findall('\d+', str(soup.find(class_='companyName').text).split("CIK#: ")[1].strip())[0])
-        company_state = soup.find(class_='identInfo').text.split("State location: ")[1].split("|")[0].strip()
-        df = pd.DataFrame({'CIK': [company_cik], 'Company Name': [company_name], 'State': [company_state]})
-        return df
-    
+    table = soup.find("table", {"class": "tableFile2"})
+
+    if soup.find(class_='companyName') is not None:
+        company_names = str(soup.find(class_='companyName').text).split('CIK#: ', maxsplit=1)[0]
+        cik_codes = str(re
+                          .findall("\d+",
+                                   str(soup.find(class_="companyName").text)
+                                   .split("CIK#: ")[1]
+                                   .strip())[0])
+        states = (
+            soup.find(class_="identInfo")
+            .text.split("State location: ")[1]
+            .split("|")[0]
+            .strip()
+        )
+        company_df = pd.DataFrame(
+            {
+                "CIK": [company_names],
+                "Company Name": [cik_codes],
+                "State": [states],
+            }
+        )
+        return company_df
+
     # Extract the table rows
     if isinstance(table, element.Tag):
-        rows = table.find_all('tr')
+        rows = table.find_all("tr")
 
         # Extract the CIK Codes, Company Names and States
         cik_codes = []
         company_names = []
         states = []
         for row in rows[1:]:  # Ignore the header row
-            cols = row.find_all('td')
+            cols = row.find_all("td")
             cik_code = cols[0].text
             company_name = cols[1].text
             state = cols[2].text
@@ -86,25 +111,29 @@ def edgar_cik(query, comprehensive = False, start_row = 0, timeout_sec = 15, las
             states.append(state)
 
         # Create a pandas DataFrame
-        df = pd.DataFrame({
-            'CIK': cik_codes,
-            'Company Name': company_names,
-            'State': states
-        })
-        print(f"Start Row: {start_row} - {df.iloc[0]['Company Name']}")
-        
-        if (comprehensive == True) & (len(df) == 100) & ( last_df.equals(df) == False) & (start_row < max_start_row):
-            new_df = edgar_cik(query, comprehensive = comprehensive, start_row = start_row + 100, last_df = df)
-                    
-            df = pd.concat([df,
-                    new_df
-                    ]).reset_index(drop=True)
+        company_df = pd.DataFrame(
+            {"CIK": cik_codes, "Company Name": company_names, "State": states}
+        )
+        print(f"Start Row: {start_row} - {company_df.iloc[0]['Company Name']}")
 
-        return df
-    
-    else:
-        print(f"Final Row Reached At {start_row}")
-        return pd.DataFrame()
+        if (
+            (comprehensive is True)
+            & (len(company_df) == 100)
+            & (last_company_df.equals(company_df) is False)
+            & (start_row < max_start_row)
+        ):
+            new_company_df = edgar_cik(
+                query,
+                comprehensive=comprehensive,
+                start_row=start_row + 100,
+                last_company_df=company_df,
+            )
 
+            company_df = pd.concat([company_df, new_company_df]).reset_index(drop=True)
+
+        return company_df
+
+    print(f"Final Row Reached At {start_row}")
+    return pd.DataFrame()
 
 # %%
