@@ -41,7 +41,13 @@ def edgar_cik(
         company_df: Pandas DataFrame of company names, CIK, and state
 
     Examples:
-        - edgar_cik('Apple Inc.', comprehensive=True)
+        -  edgar_cik(
+            query = 'App',
+            comprehensive=True,     
+            start_row=0,
+            timeout_sec=15,
+            last_company_df=pd.DataFrame(),
+            max_start_row=25000,)
     """
 
     # Read the company JSON from the SEC
