@@ -32,7 +32,7 @@ soupsieve==2.4
     # via beautifulsoup4
 tqdm==4.64.1
     # via tidyxbrl (pyproject.toml)
-urllib3==1.26.14
+urllib3==1.26.18
     # via requests
 PyYAML>=5.4.1
 lxml>=4.9.2
