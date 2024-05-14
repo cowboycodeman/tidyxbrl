@@ -1,9 +1,7 @@
 Metadata-Version: 2.1
 Name: tidyxbrl
-Version: 1.0.3
+Version: 1.0.5
 Summary: A package to parse the XBRL file format & interface with XBRL APIs in a tidy format
-Home-page: https://github.com/cowboycodeman/tidyxbrl/
-Author: Ryan McDonald
 Author-email: Ryan McDonald <ryancmcdonald@gmail.com>
 Project-URL: Homepage, https://github.com/cowboycodeman/tidyxbrl/
 Project-URL: Issues, https://github.com/cowboycodeman/tidyxbrl/issues
@@ -25,6 +23,11 @@ License-File: LICENSE
 </div>
 
 -----------------
+
+[![PyPI](https://img.shields.io/pypi/v/tidyxbrl)](https://pypi.org/project/tidyxbrl/#history)
+[![PyPI - Status](https://img.shields.io/pypi/status/tidyxbrl)](https://pypi.org/project/tidyxbrl/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/tidyxbrl)](https://pypi.org/project/tidyxbrl/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/tidyxbrl)](https://pypi.org/project/tidyxbrl/)
 
 # tidyxbrl: The tidy XBRL Interface
 
