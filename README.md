@@ -4,6 +4,11 @@
 
 -----------------
 
+[![PyPI](https://img.shields.io/pypi/v/tidyxbrl)](https://pypi.org/project/tidyxbrl/#history)
+[![PyPI - Status](https://img.shields.io/pypi/status/tidyxbrl)](https://pypi.org/project/tidyxbrl/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/tidyxbrl)](https://pypi.org/project/tidyxbrl/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/tidyxbrl)](https://pypi.org/project/tidyxbrl/)
+
 # tidyxbrl: The tidy XBRL Interface
 
 ## What is it?
