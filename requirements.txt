@@ -35,4 +35,4 @@ tqdm==4.64.1
 urllib3==1.26.14
     # via requests
 PyYAML>=5.4.1
-tidyxbrl>=1.01
+tidyxbrl>=1.0.1
