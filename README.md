@@ -66,8 +66,8 @@ dataresponse = tidyxbrl.xbrl_query(access_token=response.access_token.values[0],
 
 **edgar_query** - Query SEC data using the Central Index Key (CIK)
 ```
-companycik = tidyxbrl.edgar_cik()
-desiredcorp = str(companycik[companycik.title.str.contains("ZILLOW GROUP, INC.")]['cik_str'].unique()[0])
+companycik = tidyxbrl.edgar_cik("ZILLOW GROUP, INC")
+desiredcorp = str(companycik[companycik.company.str.contains("ZILLOW GROUP, INC.")]['cik_str'].unique()[0])
 tidyxbrl.edgar_query(desiredcorp, query_type = 'submissions')
 tidyxbrl.edgar_query(desiredcorp, query_type = 'companyconcept', queryextension = '/us-gaap/AccountsPayableCurrent')
 tidyxbrl.edgar_query(desiredcorp, query_type = 'companyfacts')
@@ -83,3 +83,4 @@ tidyxbrl.edgar_frames(urldescriptor = 'us-gaap/NonoperatingIncomeExpense/USD/CY2
 - [NumPy - The fundamental package for scientific computing with Python](https://www.numpy.org)
 - [requests - An elegant and simple HTTP library for Python, built for human beings.](https://docs.python-requests.org/en/master/)
 - [bs4 - For pulling data out of HTML and XML files](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
+- [tqdm - Instantly make your loops show a smart progress meter - just wrap any iterable with tqdm(iterable), and you're done!](https://tqdm.github.io/)
