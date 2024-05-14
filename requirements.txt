@@ -36,4 +36,4 @@ urllib3==1.26.14
     # via requests
 PyYAML>=5.4.1
 lxml>=4.9.2
-tidyxbrl>=1.0.1
+tidyxbrl>=1.0.2
