@@ -67,7 +67,7 @@ def xbrl_parse(path, timeout_sec=15):
     empty_tag_list = soup.select("context")
     columnlist = []
     for temp_tag in tag_listall:
-        if temp_tag.name not in numpy.unique(columnlist):
+        if temp_tag.name not in list(numpy.unique(columnlist)):
             columnlist.append(temp_tag.name)
 
     columnlist = list(columnlist) + ["datacode", "datavalue"]
