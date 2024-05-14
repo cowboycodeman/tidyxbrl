@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: tidyxbrl
-Version: 1.1.0
-Summary: A package to parse the XBRL file format & interface with XBRL APIs in a tidy format
+Version: 1.1.1
+Summary: A python package to parse the XBRL file format & interface with XBRL APIs in a tidy format. A powerful tool for automated financial analysis, accounting, and investment research using Pandas.
 Author-email: Ryan McDonald <ryancmcdonald@gmail.com>
 Project-URL: Homepage, https://github.com/cowboycodeman/tidyxbrl/
 Project-URL: Issues, https://github.com/cowboycodeman/tidyxbrl/issues
@@ -29,7 +29,7 @@ License-File: LICENSE
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/tidyxbrl)](https://pypi.org/project/tidyxbrl/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/tidyxbrl)](https://pypi.org/project/tidyxbrl/)
 
-# tidyxbrl: The tidy XBRL Interface
+# tidyxbrl: The tidy Python XBRL Interface
 
 ## What is it?
 

@@ -9,7 +9,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/tidyxbrl)](https://pypi.org/project/tidyxbrl/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/tidyxbrl)](https://pypi.org/project/tidyxbrl/)
 
-# tidyxbrl: The tidy XBRL Interface
+# tidyxbrl: The tidy Python XBRL Interface
 
 ## What is it?
 
@@ -77,6 +77,10 @@ tidyxbrl.edgar_query(desiredcorp, query_type = 'companyfacts')
 ```
 tidyxbrl.edgar_frames(urldescriptor = 'us-gaap/NonoperatingIncomeExpense/USD/CY2019Q1I')
 ```
+
+## Data Visualization
+
+![Real Estate Assets](figures/real_estate_assets.png)
 
 ## Dependencies
 - [pandas - A fast, powerful, flexible and easy to use open source data analysis and manipulation tool, built on top of the Python programming language.](https://pandas.pydata.org/)
