@@ -1,5 +1,4 @@
 *.yml
-*.txt
 *.tar.gz
 *.yml
 __pycache__/
