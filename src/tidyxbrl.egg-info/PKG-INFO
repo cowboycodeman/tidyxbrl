@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: tidyxbrl
-Version: 1.0.1
+Version: 1.0.2
 Summary: A package to parse the XBRL file format & interface with XBRL APIs in a tidy format
 Home-page: https://github.com/cowboycodeman/tidyxbrl/
 Author: Ryan McDonald

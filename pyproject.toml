@@ -1,6 +1,6 @@
 [project]
 name = "tidyxbrl"
-version = "1.0.1"
+version = "1.0.2"
 authors = [
   { name="Ryan McDonald", email="ryancmcdonald@gmail.com" },
 ]
