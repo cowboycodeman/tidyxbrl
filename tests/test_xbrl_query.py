@@ -2,11 +2,11 @@
 import yaml
 import tidyxbrl 
 
-credentials = yaml.safe_load(open("test_credentials.yml", "r"))
-username = credentials['credentials']['username'][0]
-password = credentials['credentials']['password'][0]
-client_id = credentials['credentials']['client_id'][0]
-client_secret = credentials['credentials']['client_secret'][0]
+# credentials = yaml.safe_load(open("test_credentials.yml", "r"))
+# username = credentials['credentials']['username'][0]
+# password = credentials['credentials']['password'][0]
+# client_id = credentials['credentials']['client_id'][0]
+# client_secret = credentials['credentials']['client_secret'][0]
 
 # response = tidyxbrl.xbrl_apikey(username=username, password=password, client_id=client_id, client_secret=client_secret, platform='pc', grant_type='password', refresh_token='')
 
