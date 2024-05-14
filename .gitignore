@@ -15,3 +15,5 @@ dist/
 build/
 *.egg
 *.whl
+*.html
+*credentials.yml

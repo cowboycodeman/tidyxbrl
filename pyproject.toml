@@ -1,6 +1,18 @@
-[build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
+[project]
+name = "tidyxbrl"
+version = "1.0.1"
+authors = [
+  { name="Ryan McDonald", email="ryancmcdonald@gmail.com" },
 ]
-build-backend = "setuptools.build_meta"
+description = "A package to parse the XBRL file format & interface with XBRL APIs in a tidy format"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/cowboycodeman/tidyxbrl/"
+Issues = "https://github.com/cowboycodeman/tidyxbrl/issues"
