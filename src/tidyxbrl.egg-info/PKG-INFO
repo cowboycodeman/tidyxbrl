@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: tidyxbrl
-Version: 1.0.2
+Version: 1.0.3
 Summary: A package to parse the XBRL file format & interface with XBRL APIs in a tidy format
 Home-page: https://github.com/cowboycodeman/tidyxbrl/
 Author: Ryan McDonald
@@ -10,7 +10,13 @@ Project-URL: Issues, https://github.com/cowboycodeman/tidyxbrl/issues
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
-Requires-Python: >=3.8
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Topic :: Office/Business :: Financial :: Investment
+Classifier: Topic :: Office/Business :: Financial :: Accounting
+Classifier: Natural Language :: English
+Requires-Python: <3.12,>=3.9
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
