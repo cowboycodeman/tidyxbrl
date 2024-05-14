@@ -98,6 +98,10 @@ tidyxbrl.edgar_query(desiredcorp, query_type = 'companyfacts')
 tidyxbrl.edgar_frames(urldescriptor = 'us-gaap/NonoperatingIncomeExpense/USD/CY2019Q1I')
 ```
 
+## Data Visualization
+
+![Real Estate Assets](figures/real_estate_assets.png)
+
 ## Dependencies
 - [pandas - A fast, powerful, flexible and easy to use open source data analysis and manipulation tool, built on top of the Python programming language.](https://pandas.pydata.org/)
 - [NumPy - The fundamental package for scientific computing with Python](https://www.numpy.org)
