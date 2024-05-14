@@ -80,7 +80,7 @@ tidyxbrl.edgar_frames(urldescriptor = 'us-gaap/NonoperatingIncomeExpense/USD/CY2
 
 ## Data Visualization
 
-![Real Estate Assets](figures/real_estate_assets.png)
+![Real Estate Assets](https://github.com/cowboycodeman/tidyxbrl/blob/main/figures/real_estate_assets.png?raw=true)
 
 ## Dependencies
 - [pandas - A fast, powerful, flexible and easy to use open source data analysis and manipulation tool, built on top of the Python programming language.](https://pandas.pydata.org/)
