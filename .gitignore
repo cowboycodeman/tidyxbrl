@@ -16,3 +16,4 @@ build/
 *.whl
 *.html
 *credentials.yml
+tidyxbrl.egg-info
