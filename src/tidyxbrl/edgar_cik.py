@@ -10,7 +10,7 @@ into 10-digit format with leading zeros.
 # https://www.edgarcompany.sec.gov/servlet/CompanyDBSearch?page=main
 
 import re
-import requests
+import httpx
 from bs4 import element
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -52,7 +52,7 @@ def edgar_cik(
 
     # Read the company JSON from the SEC
     headers = {
-        "User-Agent": "Mozilla",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
         "DNT": "1",  # Do Not Track Request Header
@@ -69,7 +69,7 @@ def edgar_cik(
         "start": start_row,
     }
 
-    response = requests.post(url, headers=headers, data=payload, timeout=timeout_sec)
+    response = httpx.post(url, headers=headers, data=payload, timeout=timeout_sec)
 
     # Parse the HTML content
     soup = BeautifulSoup(response.content, "html.parser")
