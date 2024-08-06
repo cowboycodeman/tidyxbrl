@@ -7,9 +7,10 @@ import numpy
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+from src.config.default_headers import con_headers_default
 
 
-def xbrl_parse(path, timeout_sec=15):
+def xbrl_parse(path, timeout_sec=15, con_headers = con_headers_default):
     """
     The xbrl_apikey function is used to parse the metadata from a particular XBRL file or
     website url.
@@ -50,8 +51,7 @@ def xbrl_parse(path, timeout_sec=15):
             and ":" not in tag.name
         )
 
-    soupheaders = {"User-Agent": "Mozilla"}
-    initialrequest = requests.get(path, headers=soupheaders, timeout=timeout_sec)
+    initialrequest = requests.get(path, headers=con_headers, timeout=timeout_sec)
     if initialrequest.status_code == 200:
         websitedocument = initialrequest.content
         soup = BeautifulSoup(websitedocument, "xml")
@@ -59,8 +59,9 @@ def xbrl_parse(path, timeout_sec=15):
         try:
             with open(path, "r", encoding="utf-8") as file:
                 soup = BeautifulSoup(file, "xml")
-        except ValueError:
-            print("Path Does Not Correspond to a Website or Valid File Path")
+        except (OSError, ValueError, requests.RequestException) as e:
+            print(f"Error: {e}")
+            return None
 
     # Pull a list of the descriptive columns to populate an empty dataframe
     tag_listall = soup.find_all(xbrlcolumnprefilter)
