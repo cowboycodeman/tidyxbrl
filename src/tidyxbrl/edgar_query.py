@@ -36,9 +36,10 @@ import pandas
 import requests
 from tqdm import tqdm
 import numpy
+from src.config.default_headers import con_headers_default
 
 
-def edgar_query(companycik, query_type, queryextension="", parse_pandas = True, timeout_sec = 15):
+def edgar_query(companycik, query_type, queryextension="", parse_pandas = True, timeout_sec = 15, con_headers = con_headers_default):
     """
     Query SEC data using the Central Index Key (CIK).
 
@@ -83,16 +84,8 @@ def edgar_query(companycik, query_type, queryextension="", parse_pandas = True, 
     dataquery = (
         urlquery + str(companycik) + str(queryextension).replace(".json", "") + ".json"
     )
-    headers = {
-        "User-Agent": "Mozilla",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-        "DNT": "1",  # Do Not Track Request Header
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-    }
     # Pull the data, check the response, and convert to a long format
-    dataresponse = requests.get(url=dataquery, headers=headers, timeout=timeout_sec)
+    dataresponse = requests.get(url=dataquery, headers=con_headers, timeout=timeout_sec)
     if dataresponse.status_code == 200:
         try:
             result = pandas.DataFrame(pandas.json_normalize(dataresponse.json()))
