@@ -14,6 +14,7 @@ import httpx
 from bs4 import element
 from bs4 import BeautifulSoup
 import pandas as pd
+from src.config.default_headers import con_headers_default
 
 # %%
 
@@ -25,6 +26,7 @@ def edgar_cik(
     timeout_sec=15,
     last_company_df=pd.DataFrame(),
     max_start_row=25000,
+    con_headers = con_headers_default
 ):
     """
     The edgar_cik function is used to pull Central Index Key (CIK) for reporting companies
@@ -51,14 +53,6 @@ def edgar_cik(
     """
 
     # Read the company JSON from the SEC
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-        "DNT": "1",  # Do Not Track Request Header
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-    }
 
     url = "https://www.sec.gov/cgi-bin/browse-edgar"  # Replace with your desired CIK
 
@@ -69,7 +63,7 @@ def edgar_cik(
         "start": start_row,
     }
 
-    response = httpx.post(url, headers=headers, data=payload, timeout=timeout_sec)
+    response = httpx.post(url, headers=con_headers, data=payload, timeout=timeout_sec)
 
     # Parse the HTML content
     soup = BeautifulSoup(response.content, "html.parser")
