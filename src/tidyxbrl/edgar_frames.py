@@ -22,9 +22,10 @@ be mindful different reporting start and end dates for facts contained in a fram
 import pandas
 import requests
 from tqdm import tqdm
+from src.config.default_headers import con_headers_default
 
 
-def edgar_frames(urldescriptor="", timeout_sec = 15):
+def edgar_frames(urldescriptor="", timeout_sec = 15, con_headers = con_headers_default):
     """
     The edgar_frames function aggregates one fact for each reporting entity
     that is last filed that most closely fits the calendrical period requested.
@@ -58,9 +59,8 @@ def edgar_frames(urldescriptor="", timeout_sec = 15):
         + str(urldescriptor).replace(".json", "")
         + ".json"
     )
-    soupheaders = {"User-Agent": "Mozilla"}
     # Pull the data, check the response, and convert to a long format
-    dataresponse = requests.get(url=dataquery, headers=soupheaders, timeout=timeout_sec)
+    dataresponse = requests.get(url=dataquery, headers=con_headers, timeout=timeout_sec)
     if dataresponse.status_code == 200:
         try:
             result = pandas.DataFrame(pandas.json_normalize(dataresponse.json()))
