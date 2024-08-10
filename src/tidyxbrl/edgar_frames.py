@@ -45,6 +45,7 @@ def edgar_frames(urldescriptor="", timeout_sec = 15, con_headers = con_headers_d
             - denomination: Report currency (i.e. USD)
             - dateholder: Date of evaluation (i.e. CY2019Q1I)
         timeout_sec: The time in seconds to wait for the server to respond
+        con_headers (dict): The headers to be sent with the initial request.
 
     Outputs:
         return companies: Return a pandas DataFrame of reporting companies and their associated CIK

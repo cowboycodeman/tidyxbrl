@@ -18,6 +18,7 @@ def xbrl_parse(path, timeout_sec=15, con_headers = con_headers_default):
     Args:
         path (str): Filepath or website url corresponding to XBRL data.
         timeout_sec: The time in seconds to wait for the server to respond
+        con_headers (dict): The headers to be sent with the initial request.
 
     Returns:
         pandas.DataFrame: DataFrame output of the XBRL file in a tidy format.

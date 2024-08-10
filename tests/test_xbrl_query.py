@@ -1,6 +1,10 @@
 # %%
 import yaml
-import tidyxbrl 
+import sys
+import os
+import pytest
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src.tidyxbrl import edgar_frames 
 
 # credentials = yaml.safe_load(open("test_credentials.yml", "r"))
 # username = credentials['credentials']['username'][0]

@@ -55,6 +55,7 @@ def edgar_query(companycik, query_type, queryextension="", parse_pandas = True, 
         query_type to specify the report type. Defaults to "".
         parse_pandas (bool, optional): If True, the data is converted to a pandas DataFrame.
         timeout_sec: The time in seconds to wait for the server to respond
+        con_headers (dict): The headers to be sent with the initial request.
 
     Returns:
         pandas.DataFrame: Tidy dataframe housing the report data.

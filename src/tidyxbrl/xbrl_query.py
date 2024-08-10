@@ -7,13 +7,15 @@ Query functions for the XBRL API
 
 import pandas
 import requests
+from src.config.default_headers import con_headers_default
 
 
 def xbrl_query(
     access_token,
     queryparameters,
     baseapiurl="https://api.xbrl.us/api/v1/report/search?",
-    timeout_sec = 15
+    timeout_sec = 15,
+    con_headers = con_headers_default
 ):
     """
     https://xbrl.us/home/use/xbrl-api/
@@ -31,6 +33,7 @@ def xbrl_query(
             - 'https://api.xbrl.us/api/v1/fact/search?'
         queryparameters: Dictionary structure to specify each aspect of the api request (See the
         Examples section below)
+        con_headers (dict): The headers to be sent with the initial request.
 
     Outputs:
         xbrl_queryoutput: Pandas Dataframe object corresponding to the fields specified in the
@@ -58,7 +61,7 @@ def xbrl_query(
     # Add the baseurl and modified request values
     dataquery = str(baseapiurl + queryurl)
     # Generate the authentication bearer tolken
-    headers = {"Authorization": "Bearer " + access_token}
+    headers =  {**con_headers, **{"Authorization": "Bearer " + access_token}}
     # Generate the response
     dataresponse = requests.get(url=dataquery, headers=headers, timeout=timeout_sec)
     # Check the Response Code

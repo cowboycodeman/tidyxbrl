@@ -35,6 +35,7 @@ def xbrl_apikey(
         refresh_token (str, optional): Optional refresh token provided in a previous
         xbrl_apikey request.
         timeout_sec: The time in seconds to wait for the server to respond
+        con_headers (dict): The headers to be sent with the initial request.
 
     Returns:
         pandas.DataFrame: DataFrame output of the XBRL api key.

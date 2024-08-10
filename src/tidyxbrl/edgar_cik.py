@@ -38,6 +38,7 @@ def edgar_cik(
         timeout_sec: The time in seconds to wait for the server to respond
         last_company_df: (comprehensive = True) The previous DataFrame to compare with current
         max_start_row: The maximum starting index for retrieving results
+        con_headers (dict): The headers to be sent with the initial request.
 
     Returns:
         company_df: Pandas DataFrame of company names, CIK, and state
