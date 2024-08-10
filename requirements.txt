@@ -37,3 +37,4 @@ urllib3==1.26.18
 PyYAML>=5.4.1
 lxml>=4.9.2
 tidyxbrl>=1.0.2
+httpx>=0.27.0
