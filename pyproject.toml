@@ -22,3 +22,10 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/cowboycodeman/tidyxbrl/"
 Issues = "https://github.com/cowboycodeman/tidyxbrl/issues"
+
+[tool.setuptools]
+# Include requirements.txt for development dependencies
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = ["requirements.txt"]
